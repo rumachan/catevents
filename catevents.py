@@ -1,9 +1,49 @@
 #! /usr/bin/env python
 
+import matplotlib
+matplotlib.use('Agg')
 import pandas as pd
 import matplotlib.pyplot as plt
+import sys, os
+import ConfigParser
+from subprocess import call
 
-url = "http://wfs.geonet.org.nz/geonet/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonet:quake_search_v1&outputFormat=csv&cql_filter=origintime>='2011-01-01T00:00:00.000Z'+AND+depth<50+AND+WITHIN(origin_geom,POLYGON((175.5957+-39.1695,+175.6478+-39.0827,+175.7036+-39.1121,+175.6619+-39.1833,+175.5957+-39.1695)))+AND+depth<20"
+#input argument - configuration file
+if (len(sys.argv) != 2):
+  sys.exit("syntax cateevents.py config_file")
+else:
+  cfg = sys.argv[1]
+
+#parse configuration file
+config = ConfigParser.ConfigParser()
+config.read(cfg)
+server = config.get('web','server')
+user = config.get('web','user')
+webdir = config.get('web','webdir')
+xsize = float(config.get('plot','xsize'))
+ysize = float(config.get('plot','ysize'))
+plot_dir = config.get('plot','plot_dir')
+
+#get region names
+regions = []
+for section in config.sections():
+  if 'region-' in section:
+    reg = section.split('-')[1]
+    regions.append(reg)
+
+#loop through regions
+for reg in regions:
+  print 'region = ', reg
+  startdate = config.get('region-'+reg,'startdate')
+  maxdepth = config.get('region-'+reg,'maxdepth')
+  polygon = config.get('region-'+reg,'polygon')
+  print startdate
+  print maxdepth
+  print polygon
+
+sys.exit()
+
+url = "http://wfs.geonet.org.nz/geonet/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonet:quake_search_v1&outputFormat=csv&cql_filter=origintime>='2011-01-01T00:00:00.000Z'+AND+WITHIN(origin_geom,POLYGON((175.5957+-39.1695,+175.6478+-39.0827,+175.7036+-39.1121,+175.6619+-39.1833,+175.5957+-39.1695)))+AND+depth<20"
 cat = pd.read_csv(url, parse_dates=['origintime'])
 
 #sort by origintime, so events in time order
