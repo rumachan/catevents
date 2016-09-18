@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 
-import matplotlib
-matplotlib.use('Agg')
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys, os
@@ -11,7 +9,7 @@ from subprocess import call
 
 #input argument - configuration file
 if (len(sys.argv) != 2):
-  sys.exit("syntax cateevents.py config_file")
+  sys.exit("syntax catevents.py config_file")
 else:
   cfg = sys.argv[1]
 
@@ -54,13 +52,12 @@ for reg in regions:
 
   fig = plt.figure(figsize=(15, 15))
 
-  #title
-  now = datetime.datetime.now()
-  title = (reg.capitalize()+ ', plotted at: '+ now.strftime("%Y-%m-%d %H:%M"))
-  plt.title(title)
-
   #magnitude vs time
   ax1 = fig.add_subplot(3, 1, 1)
+  #title
+  now = datetime.datetime.now()
+  title = (reg.replace('_', ' ').title() + ', plotted at: '+ now.strftime("%Y-%m-%d %H:%M"))
+  plt.title(title)
   #automatic locations
   time = pd.to_datetime(cat.origintime[cat['evaluationmode']=='automatic'])
   automatic = cat.magnitude[cat['evaluationmode']=='automatic']
