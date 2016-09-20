@@ -37,9 +37,6 @@ for reg in regions:
   startdate = config.get('region-'+reg,'startdate')
   maxdepth = config.get('region-'+reg,'maxdepth')
   polygon = config.get('region-'+reg,'polygon')
-  #print startdate
-  #print maxdepth
-  #print polygon
 
   url = "http://wfs.geonet.org.nz/geonet/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonet:quake_search_v1&outputFormat=csv&cql_filter=origintime>="+startdate+"+AND+WITHIN(origin_geom,POLYGON(("+polygon+"+)))+AND+depth<"+maxdepth
   #print url
@@ -52,11 +49,17 @@ for reg in regions:
 
   fig = plt.figure(figsize=(15, 15))
 
+  #start and now for x-axis
+  now = datetime.datetime.now()
+  start = datetime.datetime.strptime(startdate, "%Y-%m-%dT%H:%M:%S.%fZ")
+  plotstart = start.strftime("%Y-%m-%d %H:%M")
+  namestart = start.strftime("%Y-%m-%d")
+
   #magnitude vs time
   ax1 = fig.add_subplot(3, 1, 1)
+  ax1.set_xlim([start, now])
   #title
-  now = datetime.datetime.now()
-  title = (reg.replace('_', ' ').title() + ', plotted at: '+ now.strftime("%Y-%m-%d %H:%M"))
+  title = (reg.replace('_', ' ').title() + ', ' +  plotstart + ' to ' +  now.strftime("%Y-%m-%d %H:%M"))
   plt.title(title)
   #automatic locations
   time = pd.to_datetime(cat.origintime[cat['evaluationmode']=='automatic'])
@@ -69,16 +72,18 @@ for reg in regions:
   ax1.plot(time, manual, marker='o', color='blue', linestyle='None', label='manual')
   #ax1.bar(time, manual, width = 0.005, color='blue', edgecolor='blue', align='edge', label='manual')
   plt.ylabel('magnitude')
-  plt.legend()
+  plt.legend(loc='best')
 
   #cumulative number
   ax2 = fig.add_subplot(3, 1, 2, sharex = ax1)
+  ax2.set_xlim([start, now])
   ax2.plot(cat.origintime, cat.index, color='red', marker='None', label='cumnum')
   ax2.tick_params(axis='y', colors='red')
   ax2.set_ylabel('cumulative number', color = 'red')
 
   #cumulative energy (normalised to 1.0), on same plot
   ax2a= ax2.twinx()
+  ax2a.set_xlim([start, now])
   cat['energy'] = pow(10,(1.44 * cat['magnitude'] + 5.24))
   cat['cumeng'] = cat['energy'].cumsum()
   cat['cumeng'] = cat['cumeng'] / cat['cumeng'].max()
@@ -88,6 +93,8 @@ for reg in regions:
 
   #depth
   ax3 = fig.add_subplot(3, 1, 3, sharex = ax1)
+  ax3.set_xlim([start, now])
+  ax3.set_ylim([0, float(maxdepth)])
   #automatic locations
   time = pd.to_datetime(cat.origintime[cat['evaluationmode']=='automatic'])
   automatic = cat.depth[cat['evaluationmode']=='automatic']
@@ -98,11 +105,11 @@ for reg in regions:
   ax3.plot(time, manual, color='blue', marker='o', linestyle='None', label='manual')
   plt.gca().invert_yaxis()
   ax3.set_ylabel('depth(km)')
-  plt.legend()
+  plt.legend(loc='best')
 
-  image = os.path.join(plot_dir, reg+'.png')
+  image = os.path.join(plot_dir, reg+'_'+namestart+'.png')
   plt.savefig(image, dpi=200)
 
   #send image to web server
   cmdstr = '/usr/bin/scp '+ image + ' ' +user +'@' + server + ':' + webdir
-  #call(cmdstr, shell=True)
+  call(cmdstr, shell=True)
