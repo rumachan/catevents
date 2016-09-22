@@ -1,10 +1,14 @@
 # catevents
 GeoNet earthquake catalogue event time-series plotting
 
-The python script catevents.py generates a series of time-series plots of basic aspects of seismicity derived from a file extracted from the GeoNet earthquake catalogue.
+The python script ```catevents.py``` generates a series of time-series plots of basic aspects of seismicity derived from a file extracted from the GeoNet earthquake catalogue.
 
-The file catevents.cfg contains configuration information for catevents.py.
-```javascript
+To run ```catevents.py catevents.cfg ```
+
+```catevents.py``` creates a url to carryout a search on the [GeoNet earthquake catalogue] (http://wfs.geonet.org.nz/)
+
+The file ```catevents.cfg``` contains configuration information for ```catevents.py```.
+```
 [web]
 server: volcano.gns.cri.nz
 user: volcano
