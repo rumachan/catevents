@@ -6,6 +6,7 @@ import sys, os
 import ConfigParser
 import datetime
 from subprocess import call
+#from datetime import datetime, timedelta
 
 #input argument - configuration file
 if (len(sys.argv) != 2):
@@ -23,7 +24,6 @@ xsize = float(config.get('plot','xsize'))
 ysize = float(config.get('plot','ysize'))
 plot_dir = config.get('plot','plot_dir')
 
-
 #get region names
 regions = []
 for section in config.sections():
@@ -34,12 +34,18 @@ for section in config.sections():
 #loop through regions
 for reg in regions:
   print 'region = ', reg
+  datetype = config.get('region-'+reg,'datetype')
   startdate = config.get('region-'+reg,'startdate')
   maxdepth = config.get('region-'+reg,'maxdepth')
   polygon = config.get('region-'+reg,'polygon')
 
+  #calculate startdate from days before
+  if (datetype == 'daysbefore'):
+    sdt = datetime.datetime.now() - datetime.timedelta(days=int(startdate))
+    startdate = sdt.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
   url = "http://wfs.geonet.org.nz/geonet/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonet:quake_search_v1&outputFormat=csv&cql_filter=origintime>="+startdate+"+AND+WITHIN(origin_geom,POLYGON(("+polygon+"+)))+AND+depth<"+maxdepth
-  #print url
+#  print url
 
   cat = pd.read_csv(url, parse_dates=['origintime'])
 
@@ -59,6 +65,9 @@ for reg in regions:
   ax1 = fig.add_subplot(3, 1, 1)
   ax1.set_xlim([start, now])
   #title
+  #drop underscore_letter from end, if present
+  if (reg[-2] == '_'):
+    reg = reg[:-2]
   title = (reg.replace('_', ' ').title() + ', ' +  plotstart + ' to ' +  now.strftime("%Y-%m-%d %H:%M"))
   plt.title(title)
   #automatic locations
