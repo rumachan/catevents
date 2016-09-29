@@ -39,10 +39,20 @@ for reg in regions:
   maxdepth = config.get('region-'+reg,'maxdepth')
   polygon = config.get('region-'+reg,'polygon')
 
-  #calculate startdate from days before
+  #start and now for x-axis
+  #calculate startdate from days before, and namestart for plot name
+  now = datetime.datetime.now()
   if (datetype == 'daysbefore'):
+    namestart = startdate
     sdt = datetime.datetime.now() - datetime.timedelta(days=int(startdate))
     startdate = sdt.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    start = sdt
+    #print start
+  if (datetype == 'datetime'):
+    start = datetime.datetime.strptime(startdate, "%Y-%m-%dT%H:%M:%S.%fZ")
+    #print start
+    namestart = start.strftime("%Y-%m-%d")
+  titlestart = start.strftime("%Y-%m-%d %H:%M")
 
   url = "http://wfs.geonet.org.nz/geonet/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonet:quake_search_v1&outputFormat=csv&cql_filter=origintime>="+startdate+"+AND+WITHIN(origin_geom,POLYGON(("+polygon+"+)))+AND+depth<"+maxdepth
 #  print url
@@ -55,12 +65,6 @@ for reg in regions:
 
   fig = plt.figure(figsize=(15, 15))
 
-  #start and now for x-axis
-  now = datetime.datetime.now()
-  start = datetime.datetime.strptime(startdate, "%Y-%m-%dT%H:%M:%S.%fZ")
-  plotstart = start.strftime("%Y-%m-%d %H:%M")
-  namestart = start.strftime("%Y-%m-%d")
-
   #magnitude vs time
   ax1 = fig.add_subplot(3, 1, 1)
   ax1.set_xlim([start, now])
@@ -68,7 +72,7 @@ for reg in regions:
   #drop underscore_letter from end, if present
   if (reg[-2] == '_'):
     reg = reg[:-2]
-  title = (reg.replace('_', ' ').title() + ', ' +  plotstart + ' to ' +  now.strftime("%Y-%m-%d %H:%M"))
+  title = (reg.replace('_', ' ').title() + ', ' +  titlestart + ' to ' +  now.strftime("%Y-%m-%d %H:%M"))
   plt.title(title)
   #automatic locations
   time = pd.to_datetime(cat.origintime[cat['evaluationmode']=='automatic'])
@@ -121,4 +125,4 @@ for reg in regions:
 
   #send image to web server
   cmdstr = '/usr/bin/scp '+ image + ' ' +user +'@' + server + ':' + webdir
-  call(cmdstr, shell=True)
+  #call(cmdstr, shell=True)
