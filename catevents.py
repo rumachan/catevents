@@ -125,4 +125,4 @@ for reg in regions:
 
   #send image to web server
   cmdstr = '/usr/bin/scp '+ image + ' ' +user +'@' + server + ':' + webdir
-  #call(cmdstr, shell=True)
+  call(cmdstr, shell=True)
