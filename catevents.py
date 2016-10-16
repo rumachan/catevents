@@ -68,6 +68,8 @@ for reg in regions:
   #magnitude vs time
   ax1 = fig.add_subplot(3, 1, 1)
   ax1.set_xlim([start, now])
+  ymax = 1.1*cat.magnitude.max()
+  ax1.set_ylim([0,ymax])
   #title
   #drop underscore_letter from end, if present
   if (reg[-2] == '_'):
