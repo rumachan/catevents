@@ -9,7 +9,9 @@ To run ```catevents.py catevents.cfg ```
 A typical search url is similar to ```http://wfs.geonet.org.nz/geonet/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonet:quake_search_v1&outputFormat=csv&cql_filter=BBOX(origin_geom,174,-41,175,-42)+AND+origintime>='2009-08-01'+AND+magnitude>4```
 
 The file ```catevents.cfg``` contains configuration information for ```catevents.py```.
-The start date for the query (and plot) can be specified in two ways, either by giving a date-time and a number of days before the current date-time.
+The start date for the query (and plot) can be specified in two ways, either by giving a date-time or a number of days before the current date-time.
+
+The resulting png plot files are written to a local directory, and are then copied to a web server using scp.
 ```
 [web]
 server: volcano.gns.cri.nz
