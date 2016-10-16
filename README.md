@@ -5,7 +5,7 @@ The python script ```catevents.py``` generates a series of time-series plots of 
 
 To run ```catevents.py catevents.cfg ```
 
-```catevents.py``` creates a url to carryout a search on the [GeoNet earthquake catalogue] (http://wfs.geonet.org.nz/)
+```catevents.py``` creates a url to carryout a search on the [GeoNet earthquake catalogue] (http://wfs.geonet.org.nz/).
 A typical search url is similar to ```http://wfs.geonet.org.nz/geonet/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geonet:quake_search_v1&outputFormat=csv&cql_filter=BBOX(origin_geom,174,-41,175,-42)+AND+origintime>='2009-08-01'+AND+magnitude>4```
 
 The file ```catevents.cfg``` contains configuration information for ```catevents.py```.
