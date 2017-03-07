@@ -35,3 +35,22 @@ startdate: 365
 maxdepth: 20
 polygon: 175.595+-39.162,+175.652+-39.089,+175.702+-39.109,+175.641+-39.186,+175.595+-39.162
 ```
+
+### Docker instructions
+First get the source code:
+
+```
+git clone  --depth=1 https://github.com/rumachan/catevents.git
+```
+Then build the docker image:
+
+```
+cd catevents
+docker build -t catevents .
+```
+And now run the image, storing the script's output in this case under `/tmp/catevents_output`:
+
+```
+mkdir /tmp/catevents_output
+docker run -it --rm -v /tmp/catevents_output:/output catevents
+```
