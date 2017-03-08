@@ -52,5 +52,5 @@ And now run the image, storing the script's output in this case under `/tmp/cate
 
 ```
 mkdir /tmp/catevents_output
-docker run -it --rm -v /tmp/catevents_output:/output catevents
+docker run -it --rm -v /tmp/catevents_output:/home/volcano/output catevents
 ```
