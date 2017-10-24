@@ -108,6 +108,7 @@ for reg in regions:
     # cumulative energy (normalised to 1.0), on same plot
     ax2a = ax2.twinx()
     ax2a.set_xlim([start, now])
+    ax2a.set_ylim([0, 1])
     cat['energy'] = pow(10, (1.44 * cat['magnitude'] + 5.24))
     cat['cumeng'] = cat['energy'].cumsum()
     cat['cumeng'] = cat['cumeng'] / cat['cumeng'].max()
