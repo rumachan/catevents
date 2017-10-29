@@ -35,14 +35,12 @@ shift
 done
 
 if [ "${RUNONLY}" == "false" ]; then
-    docker stop catevents 
-    docker rm catevents
     docker rmi yadabe/catevents
     docker build --no-cache=true -t yadabe/catevents .
 fi
 
 if [ "${BUILDONLY}" == "false" ] ;then
-    docker run --name catevents -v html:/output yadabe/catevents
+    docker run --rm -v html:/output yadabe/catevents
 fi
 
 
