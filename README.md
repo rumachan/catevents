@@ -11,7 +11,7 @@ A typical search url is similar to ```http://wfs.geonet.org.nz/geonet/ows?servic
 The file ```catevents.cfg``` contains configuration information for ```catevents.py```.
 The start date for the query (and plot) can be specified in two ways, either by giving a date-time or a number of days before the current date-time.
 
-The resulting png plot files are written to a local directory, and are then copied to a web server using scp.
+The resulting png plot files are written to a local directory.
 ```
 [web]
 server: volcano.gns.cri.nz
@@ -36,21 +36,40 @@ maxdepth: 20
 polygon: 175.595+-39.162,+175.652+-39.089,+175.702+-39.109,+175.641+-39.186,+175.595+-39.162
 ```
 
-### Docker instructions
+### Docker
+
+To install and run the scripts in a docker image proceed as follows.
+
 First get the source code:
 
 ```
-git clone  --depth=1 https://github.com/rumachan/catevents.git
+git clone  --depth=1  https://github.com/rumachan/catevents.git
 ```
-Then build the docker image:
+
+To build and run the docker image you can use the `buildnrun.sh` script:
 
 ```
-cd catevents
-docker build -t catevents .
+cd catevents 
+./buildnrun.sh -h
+Usage: ./buildnrun.sh [Options]
+
+Build and run docker image.
+
+Options:
+    -h              Show this message.
+    -r              Only run image without rebuilding it.
+    -b              Only rebuild image without running it.
+    -t              Assign a tag to the docker image (default: latest).
 ```
-And now run the image, storing the script's output in this case under `/tmp/catevents_output`:
+
+By default `buildnrun.sh` runs both the build and run stage.
+
+Using the `buildnrun.sh` script also requires the docker volume `html` to be present 
+where plots are stored.
+
+To generate it run:
 
 ```
-mkdir /tmp/catevents_output
-docker run -it --rm -v /tmp/catevents_output:/home/volcano/output catevents
+docker volume create html
 ```
+
