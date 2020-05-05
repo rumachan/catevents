@@ -7,7 +7,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import sys
 import os
-import ConfigParser
+import configparser
 import datetime
 
 # input argument - configuration file
@@ -17,7 +17,7 @@ else:
     cfg = sys.argv[1]
 
 # parse configuration file
-config = ConfigParser.ConfigParser()
+config = configparser.ConfigParser()
 config.read(cfg)
 server = config.get('web', 'server')
 user = config.get('web', 'user')
@@ -35,7 +35,7 @@ for section in config.sections():
 
 # loop through regions
 for reg in regions:
-    print 'region = ', reg
+    print ('region = ', reg)
     datetype = config.get('region-' + reg, 'datetype')
     startdate = config.get('region-' + reg, 'startdate')
     maxdepth = config.get('region-' + reg, 'maxdepth')

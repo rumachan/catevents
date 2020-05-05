@@ -44,7 +44,7 @@ if [ "${RUNONLY}" == "false" ]; then
 fi
 
 if [ "${BUILDONLY}" == "false" ] ;then
-    docker run --rm -v html:/output yadabe/catevents:$TAG 
+    docker run --rm -v html:/output yadabe/catevents:$TAG catevents.py catevents.cfg
 fi
 
 
